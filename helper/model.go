@@ -12,3 +12,12 @@ func ToAlbumResponse(album domain.Album) web.AlbumResponse {
 		Year: album.Year,
 	}
 }
+
+func ToAlbumResponses(albums []domain.Album) []web.AlbumResponse {
+	var albumResponses []web.AlbumResponse
+	for _, album := range albums {
+		albumResponses = append(albumResponses, ToAlbumResponse(album))
+	}
+
+	return albumResponses
+}
