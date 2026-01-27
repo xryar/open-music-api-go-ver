@@ -26,7 +26,7 @@ func NewSongService(repository repositories.SongRepository, db *sql.DB, validate
 	}
 }
 
-func (ss *SongServiceImpl) Create(ctx context.Context, request web.CreateSongRequest) web.SongResponse {
+func (ss *SongServiceImpl) CreateSong(ctx context.Context, request web.CreateSongRequest) web.SongResponse {
 	err := ss.validate.Struct(request)
 	helper.PanicIfError(err)
 
@@ -48,7 +48,7 @@ func (ss *SongServiceImpl) Create(ctx context.Context, request web.CreateSongReq
 	return helper.ToSongResponse(song)
 }
 
-func (ss *SongServiceImpl) Update(ctx context.Context, request web.UpdateSongRequest) web.SongResponse {
+func (ss *SongServiceImpl) UpdateSong(ctx context.Context, request web.UpdateSongRequest) web.SongResponse {
 	err := ss.validate.Struct(request)
 	helper.PanicIfError(err)
 
@@ -75,7 +75,7 @@ func (ss *SongServiceImpl) Update(ctx context.Context, request web.UpdateSongReq
 	return helper.ToSongResponse(song)
 }
 
-func (ss *SongServiceImpl) Delete(ctx context.Context, id int) {
+func (ss *SongServiceImpl) DeleteSong(ctx context.Context, id int) {
 	tx, err := ss.DB.Begin()
 	helper.PanicIfError(err)
 	defer helper.CommitOrRollack(tx)
