@@ -58,7 +58,7 @@ func (ar *AlbumRepositoryImpl) FindByAlbumId(ctx context.Context, tx *sql.Tx, id
 }
 
 func (ar *AlbumRepositoryImpl) FindAllAlbum(ctx context.Context, tx *sql.Tx) []domain.Album {
-	SQL := "SELECT id, name, year FROM ALBUM"
+	SQL := "SELECT id, name, year FROM album"
 	rows, err := tx.QueryContext(ctx, SQL)
 	helper.PanicIfError(err)
 	defer rows.Close()
