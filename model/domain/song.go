@@ -3,7 +3,7 @@ package domain
 type Song struct {
 	Id        int
 	Title     string
-	Year      string
+	Year      int
 	Performer string
 	Genre     string
 	Duration  int
