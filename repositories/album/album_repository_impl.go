@@ -11,8 +11,8 @@ import (
 type AlbumRepositoryImpl struct {
 }
 
-func NewAlbumRepository() AlbumRepositoryImpl {
-	return AlbumRepositoryImpl{}
+func NewAlbumRepository() *AlbumRepositoryImpl {
+	return &AlbumRepositoryImpl{}
 }
 
 func (ar *AlbumRepositoryImpl) CreateAlbum(ctx context.Context, tx *sql.Tx, album domain.Album) domain.Album {
