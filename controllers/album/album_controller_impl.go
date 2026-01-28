@@ -15,7 +15,7 @@ type AlbumControllerImpl struct {
 	service services.AlbumService
 }
 
-func NewAlbumService(service services.AlbumService) *AlbumControllerImpl {
+func NewAlbumController(service services.AlbumService) *AlbumControllerImpl {
 	return &AlbumControllerImpl{service: service}
 }
 
