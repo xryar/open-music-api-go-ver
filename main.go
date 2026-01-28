@@ -4,10 +4,13 @@ import (
 	"fmt"
 	"net/http"
 	"open-music-go/app"
-	controllers "open-music-go/controllers/album"
+	albumController "open-music-go/controllers/album"
+	songController "open-music-go/controllers/song"
 	"open-music-go/helper"
-	repositories "open-music-go/repositories/album"
-	services "open-music-go/services/album"
+	albumRepository "open-music-go/repositories/album"
+	songRepository "open-music-go/repositories/song"
+	albumService "open-music-go/services/album"
+	songService "open-music-go/services/song"
 
 	"github.com/go-playground/validator/v10"
 	_ "github.com/go-sql-driver/mysql"
@@ -16,11 +19,14 @@ import (
 func main() {
 	db := app.NewDB()
 	validate := validator.New()
-	albumRepository := repositories.NewAlbumRepository()
-	albumService := services.NewAlbumService(albumRepository, db, validate)
-	albumController := controllers.NewAlbumController(albumService)
+	albumRepository := albumRepository.NewAlbumRepository()
+	songRepository := songRepository.NewSongRepository()
+	albumService := albumService.NewAlbumService(albumRepository, db, validate)
+	songService := songService.NewSongService(songRepository, db, validate)
+	albumController := albumController.NewAlbumController(albumService)
+	songController := songController.NewSongController(songService)
 
-	router := app.NewRouter(albumController)
+	router := app.NewRouter(albumController, songController)
 
 	server := http.Server{
 		Addr:    "localhost:3000",
