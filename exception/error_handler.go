@@ -1,6 +1,7 @@
 package exception
 
 import (
+	"log"
 	"net/http"
 	"open-music-go/helper"
 	"open-music-go/model/web"
@@ -18,6 +19,7 @@ func ErrorHandler(w http.ResponseWriter, r *http.Request, err interface{}) {
 	}
 
 	internalServerError(w, r, err)
+	log.Println(err)
 }
 
 func validationErrors(w http.ResponseWriter, r *http.Request, err interface{}) bool {
