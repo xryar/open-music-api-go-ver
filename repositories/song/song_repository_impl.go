@@ -16,7 +16,7 @@ func NewSongRepository() *SongRepositoryImpl {
 }
 
 func (sr *SongRepositoryImpl) CreateSong(ctx context.Context, tx *sql.Tx, song domain.Song) domain.Song {
-	SQL := "INSERT INTO song(title, year, genre, performer, duration, albumId) VALUES (?, ?, ?, ?, ?, ?)"
+	SQL := "INSERT INTO song(title, year, genre, performer, duration, album_id) VALUES (?, ?, ?, ?, ?, ?)"
 	result, err := tx.ExecContext(ctx, SQL, song.Title, song.Year, song.Genre, song.Performer, song.Duration, song.AlbumId)
 	helper.PanicIfError(err)
 
@@ -28,8 +28,8 @@ func (sr *SongRepositoryImpl) CreateSong(ctx context.Context, tx *sql.Tx, song d
 }
 
 func (sr *SongRepositoryImpl) UpdateSong(ctx context.Context, tx *sql.Tx, song domain.Song) domain.Song {
-	SQL := "UPDATE song SET title = ?, year = ?, genre = ?, performer = ?, duration = ?, albumId = ? WHERE id = ?"
-	_, err := tx.ExecContext(ctx, SQL, song.Title, song.Year, song.Genre, song.Performer, song.Duration, song.AlbumId)
+	SQL := "UPDATE song SET title = ?, year = ?, genre = ?, performer = ?, duration = ?, album_id = ? WHERE id = ?"
+	_, err := tx.ExecContext(ctx, SQL, song.Title, song.Year, song.Genre, song.Performer, song.Duration, song.AlbumId, song.Id)
 	helper.PanicIfError(err)
 
 	return song
@@ -42,7 +42,7 @@ func (sr *SongRepositoryImpl) DeleteSong(ctx context.Context, tx *sql.Tx, id int
 }
 
 func (sr *SongRepositoryImpl) FindBySongId(ctx context.Context, tx *sql.Tx, id int) (domain.Song, error) {
-	SQL := "SELECT id, title, year, genre, performer, duration, albumId FROM song WHERE id = ?"
+	SQL := "SELECT id, title, year, genre, performer, duration, album_id FROM song WHERE id = ?"
 	rows, err := tx.QueryContext(ctx, SQL, id)
 	helper.PanicIfError(err)
 	defer rows.Close()
@@ -59,7 +59,7 @@ func (sr *SongRepositoryImpl) FindBySongId(ctx context.Context, tx *sql.Tx, id i
 }
 
 func (sr *SongRepositoryImpl) FindAllSong(ctx context.Context, tx *sql.Tx) []domain.Song {
-	SQL := "SELECT id, title, year, genre, performer, duration, albumId FROM song"
+	SQL := "SELECT id, title, year, genre, performer, duration, album_id FROM song"
 	rows, err := tx.QueryContext(ctx, SQL)
 	helper.PanicIfError(err)
 	defer rows.Close()
