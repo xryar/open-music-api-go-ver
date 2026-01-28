@@ -61,14 +61,12 @@ func (ss *SongServiceImpl) UpdateSong(ctx context.Context, request web.UpdateSon
 		panic(exception.NewNotFoundError(err.Error()))
 	}
 
-	song = domain.Song{
-		Title:     request.Title,
-		Year:      request.Year,
-		Performer: request.Performer,
-		Genre:     request.Genre,
-		Duration:  request.Duration,
-		AlbumId:   request.AlbumId,
-	}
+	song.Title = request.Title
+	song.Year = request.Year
+	song.Performer = request.Performer
+	song.Genre = request.Genre
+	song.Duration = request.Duration
+	song.AlbumId = request.AlbumId
 
 	song = ss.repository.UpdateSong(ctx, tx, song)
 
