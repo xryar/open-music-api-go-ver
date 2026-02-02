@@ -1,7 +1,8 @@
 package domain
 
 type Album struct {
-	Id   int
-	Name string
-	Year int
+	Id    int
+	Name  string
+	Year  int
+	Songs []Song
 }

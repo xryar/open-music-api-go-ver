@@ -7,5 +7,5 @@ type SongResponse struct {
 	Performer string `json:"performer"`
 	Genre     string `json:"genre"`
 	Duration  int    `json:"duration"`
-	AlbumId   int    `json:"albumId"`
+	AlbumId   int    `json:"albumId,omitempty"`
 }

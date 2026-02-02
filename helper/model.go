@@ -7,10 +7,24 @@ import (
 )
 
 func ToAlbumResponse(album domain.Album) web.AlbumResponse {
+	songs := make([]web2.SongResponse, 0)
+
+	for _, song := range album.Songs {
+		songs = append(songs, web2.SongResponse{
+			Id:        song.Id,
+			Title:     song.Title,
+			Year:      song.Year,
+			Performer: song.Performer,
+			Genre:     song.Genre,
+			Duration:  song.Duration,
+		})
+	}
+
 	return web.AlbumResponse{
-		Id:   album.Id,
-		Name: album.Name,
-		Year: album.Year,
+		Id:    album.Id,
+		Name:  album.Name,
+		Year:  album.Year,
+		Songs: songs,
 	}
 }
 

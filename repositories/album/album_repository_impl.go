@@ -42,19 +42,60 @@ func (ar *AlbumRepositoryImpl) DeleteAlbum(ctx context.Context, tx *sql.Tx, albu
 }
 
 func (ar *AlbumRepositoryImpl) FindByAlbumId(ctx context.Context, tx *sql.Tx, id int) (domain.Album, error) {
-	SQL := "SELECT id, name, year FROM album WHERE id = ?"
+	SQL := "SELECT a.id, a.name, a.year, s.id, s.title, s.year, s.performer, s.genre, s.duration FROM album AS a LEFT JOIN song s ON s.album_id = a.id WHERE a.id = ?"
 	rows, err := tx.QueryContext(ctx, SQL, id)
 	helper.PanicIfError(err)
 	defer rows.Close()
 
-	album := domain.Album{}
-	if rows.Next() {
-		err := rows.Scan(&album.Id, &album.Name, &album.Year)
+	album := domain.Album{
+		Songs: []domain.Song{},
+	}
+	found := false
+
+	for rows.Next() {
+		found = true
+
+		var songId sql.NullInt64
+		var title sql.NullString
+		var year sql.NullInt64
+		var performer sql.NullString
+		var genre sql.NullString
+		var duration sql.NullInt64
+
+		err := rows.Scan(
+			&album.Id,
+			&album.Name,
+			&album.Year,
+			&songId,
+			&title,
+			&year,
+			&performer,
+			&genre,
+			&duration,
+		)
 		helper.PanicIfError(err)
-		return album, nil
-	} else {
+
+		if !songId.Valid {
+			continue
+		}
+
+		song := domain.Song{
+			Id:        int(songId.Int64),
+			Title:     title.String,
+			Year:      int(year.Int64),
+			Performer: performer.String,
+			Genre:     genre.String,
+			Duration:  int(duration.Int64),
+		}
+
+		album.Songs = append(album.Songs, song)
+	}
+
+	if !found {
 		return album, errors.New("album not found")
 	}
+
+	return album, nil
 }
 
 func (ar *AlbumRepositoryImpl) FindAllAlbum(ctx context.Context, tx *sql.Tx) []domain.Album {
