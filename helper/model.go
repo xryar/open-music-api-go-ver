@@ -4,6 +4,7 @@ import (
 	"open-music-go/model/domain"
 	web "open-music-go/model/web/album"
 	web2 "open-music-go/model/web/song"
+	web3 "open-music-go/model/web/user"
 )
 
 func ToAlbumResponse(album domain.Album) web.AlbumResponse {
@@ -56,4 +57,18 @@ func ToSongResponses(songs []domain.Song) []web2.SongResponse {
 	}
 
 	return SongResponses
+}
+
+func ToUserRegisterResponse(user domain.User) web3.UserRegisterResponse {
+	return web3.UserRegisterResponse{
+		Id:       user.Id,
+		Fullname: user.Fullname,
+		Username: user.Username,
+	}
+}
+
+func ToUserLoginResponse(token string) web3.UserLoginResponse {
+	return web3.UserLoginResponse{
+		Token: token,
+	}
 }
