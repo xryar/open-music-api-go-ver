@@ -55,7 +55,6 @@ func (sr *SongRepositoryImpl) FindBySongId(ctx context.Context, tx *sql.Tx, id i
 	} else {
 		return song, errors.New("song not found")
 	}
-
 }
 
 func (sr *SongRepositoryImpl) FindAllSong(ctx context.Context, tx *sql.Tx) []domain.Song {
