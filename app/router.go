@@ -3,6 +3,7 @@ package app
 import (
 	albumControllers "open-music-go/controllers/album"
 	songControllers "open-music-go/controllers/song"
+	userControllers "open-music-go/controllers/user"
 	"open-music-go/exception"
 
 	"github.com/julienschmidt/httprouter"
@@ -11,10 +12,12 @@ import (
 func NewRouter(
 	albumController albumControllers.AlbumController,
 	songController songControllers.SongController,
+	userController userControllers.UserController,
 ) *httprouter.Router {
 	router := httprouter.New()
 	albumRouter(router, albumController)
 	songRouter(router, songController)
+	userRouter(router, userController)
 
 	router.PanicHandler = exception.ErrorHandler
 
@@ -35,4 +38,9 @@ func songRouter(router *httprouter.Router, songController songControllers.SongCo
 	router.POST("/api/songs", songController.CreateSong)
 	router.PUT("/api/songs/:songId", songController.UpdateSong)
 	router.DELETE("/api/songs/:songId", songController.DeleteSong)
+}
+
+func userRouter(router *httprouter.Router, userController userControllers.UserController) {
+	router.POST("/api/user/register", userController.Register)
+	router.POST("/api/user/login", userController.Login)
 }
