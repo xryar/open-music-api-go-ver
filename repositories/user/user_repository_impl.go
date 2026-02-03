@@ -35,7 +35,7 @@ func (us *UserRepositoryImpl) FindByUsername(ctx context.Context, tx *sql.Tx, us
 
 	user := domain.User{}
 	if rows.Next() {
-		err := rows.Scan(&user.Id, &user.Fullname, &user.Username, &user.Password)
+		err := rows.Scan(&user.Username, &user.Password)
 		helper.PanicIfError(err)
 		return user, nil
 	} else {
