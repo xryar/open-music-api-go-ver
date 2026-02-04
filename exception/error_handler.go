@@ -18,7 +18,12 @@ func ErrorHandler(w http.ResponseWriter, r *http.Request, err interface{}) {
 		return
 	}
 
+	if unauthorizedError(w, r, err) {
+		return
+	}
+
 	internalServerError(w, r, err)
+
 	log.Println(err)
 }
 
@@ -50,6 +55,25 @@ func notFoundError(w http.ResponseWriter, r *http.Request, err interface{}) bool
 		webResponse := web.WebResponse{
 			Code:   http.StatusNotFound,
 			Status: "NOT FOUND",
+			Data:   exception.Error,
+		}
+
+		helper.WriteToResponseBody(w, webResponse)
+		return true
+	} else {
+		return false
+	}
+}
+
+func unauthorizedError(w http.ResponseWriter, r *http.Request, err interface{}) bool {
+	exception, ok := err.(UnauthorizedError)
+	if ok {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusUnauthorized)
+
+		webResponse := web.WebResponse{
+			Code:   http.StatusUnauthorized,
+			Status: "UNAUTHORIZED",
 			Data:   exception.Error,
 		}
 
