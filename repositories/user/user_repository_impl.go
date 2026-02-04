@@ -28,14 +28,14 @@ func (us *UserRepositoryImpl) CreateUser(ctx context.Context, tx *sql.Tx, user d
 }
 
 func (us *UserRepositoryImpl) FindByUsername(ctx context.Context, tx *sql.Tx, username string) (domain.User, error) {
-	SQL := "SELECT username, password FROM users WHERE username = (?) LIMIT 1"
+	SQL := "SELECT id, username, password FROM users WHERE username = (?) LIMIT 1"
 	rows, err := tx.QueryContext(ctx, SQL, username)
 	helper.PanicIfError(err)
 	defer rows.Close()
 
 	user := domain.User{}
 	if rows.Next() {
-		err := rows.Scan(&user.Username, &user.Password)
+		err := rows.Scan(&user.Id, &user.Username, &user.Password)
 		helper.PanicIfError(err)
 		return user, nil
 	} else {
