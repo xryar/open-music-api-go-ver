@@ -1,6 +1,7 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
 	"open-music-go/helper"
 	"open-music-go/model/web"
@@ -20,6 +21,8 @@ func NewAlbumController(service services.AlbumService) *AlbumControllerImpl {
 }
 
 func (ac *AlbumControllerImpl) CreateAlbum(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	userId := r.Context().Value("userId").(int)
+	fmt.Println("User ID:", userId)
 	albumCreateRequest := req.CreateAlbumRequest{}
 	helper.ReadFromRequestBody(r, &albumCreateRequest)
 
@@ -34,6 +37,8 @@ func (ac *AlbumControllerImpl) CreateAlbum(w http.ResponseWriter, r *http.Reques
 }
 
 func (ac *AlbumControllerImpl) UpdateAlbum(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	userId := r.Context().Value("userId").(int)
+	fmt.Println("User ID:", userId)
 	albumUpdateRequest := req.UpdateAlbumRequest{}
 	helper.ReadFromRequestBody(r, &albumUpdateRequest)
 
@@ -54,6 +59,8 @@ func (ac *AlbumControllerImpl) UpdateAlbum(w http.ResponseWriter, r *http.Reques
 }
 
 func (ac *AlbumControllerImpl) DeleteAlbum(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	userId := r.Context().Value("userId").(int)
+	fmt.Println("User ID:", userId)
 	albumId := p.ByName("albumId")
 	id, err := strconv.Atoi(albumId)
 	helper.PanicIfError(err)
@@ -68,6 +75,8 @@ func (ac *AlbumControllerImpl) DeleteAlbum(w http.ResponseWriter, r *http.Reques
 }
 
 func (ac *AlbumControllerImpl) FindByAlbumId(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	userId := r.Context().Value("userId").(int)
+	fmt.Println("User ID:", userId)
 	albumId := p.ByName("albumId")
 	id, err := strconv.Atoi(albumId)
 	helper.PanicIfError(err)
@@ -84,6 +93,8 @@ func (ac *AlbumControllerImpl) FindByAlbumId(w http.ResponseWriter, r *http.Requ
 }
 
 func (ac *AlbumControllerImpl) FindAllAlbum(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	userId := r.Context().Value("userId").(int)
+	fmt.Println("User ID:", userId)
 	albumResponses := ac.service.FindAllAlbum(r.Context())
 	webResponse := web.WebResponse{
 		Code:   200,
