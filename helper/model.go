@@ -3,8 +3,9 @@ package helper
 import (
 	"open-music-go/model/domain"
 	web "open-music-go/model/web/album"
+	web3 "open-music-go/model/web/playlist"
 	web2 "open-music-go/model/web/song"
-	web3 "open-music-go/model/web/user"
+	web4 "open-music-go/model/web/user"
 )
 
 func ToAlbumResponse(album domain.Album) web.AlbumResponse {
@@ -59,16 +60,24 @@ func ToSongResponses(songs []domain.Song) []web2.SongResponse {
 	return SongResponses
 }
 
-func ToUserRegisterResponse(user domain.User) web3.UserRegisterResponse {
-	return web3.UserRegisterResponse{
+func ToPlaylistResponse(playlist domain.Playlist) web3.PlaylistResponse {
+	return web3.PlaylistResponse{
+		Id:    playlist.Id,
+		Name:  playlist.Name,
+		Owner: playlist.Owner,
+	}
+}
+
+func ToUserRegisterResponse(user domain.User) web4.UserRegisterResponse {
+	return web4.UserRegisterResponse{
 		Id:       user.Id,
 		Fullname: user.Fullname,
 		Username: user.Username,
 	}
 }
 
-func ToUserLoginResponse(token string) web3.UserLoginResponse {
-	return web3.UserLoginResponse{
+func ToUserLoginResponse(token string) web4.UserLoginResponse {
+	return web4.UserLoginResponse{
 		Token: token,
 	}
 }
