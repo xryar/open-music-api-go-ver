@@ -5,5 +5,6 @@ type CreatePlaylistRequest struct {
 }
 
 type AddSongToPlaylistRequest struct {
-	SongId int `json:"songId" validate:"required,min=1"`
+	PlaylistId int `json:"playlistId" validate:"required,min=1"`
+	SongId     int `json:"songId" validate:"required,min=1"`
 }
