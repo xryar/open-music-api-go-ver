@@ -32,7 +32,15 @@ func (pr *PlaylistRepositoryImpl) AddSongToPlaylist(ctx context.Context, tx *sql
 	_, err := tx.ExecContext(ctx, SQL, playlistId, songId)
 	helper.PanicIfError(err)
 
-	return err
+	return nil
+}
+
+func (pr *PlaylistRepositoryImpl) DeletSongInPlaylist(ctx context.Context, tx *sql.Tx, playlistId, songId int) error {
+	SQL := "DELETE FROM playlist_songs WHERE playlist_id = ? AND song_id = ?"
+	_, err := tx.ExecContext(ctx, SQL, playlistId, songId)
+	helper.PanicIfError(err)
+
+	return nil
 }
 
 func (pr *PlaylistRepositoryImpl) FindPlaylistByOwner(ctx context.Context, tx *sql.Tx, userId int) []domain.Playlist {
