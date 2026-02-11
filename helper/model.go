@@ -61,11 +61,34 @@ func ToSongResponses(songs []domain.Song) []web2.SongResponse {
 }
 
 func ToPlaylistResponse(playlist domain.Playlist) web3.PlaylistResponse {
+	songs := make([]web2.SongResponse, 0)
+
+	for _, song := range playlist.Songs {
+		songs = append(songs, web2.SongResponse{
+			Id:        song.Id,
+			Title:     song.Title,
+			Year:      song.Year,
+			Performer: song.Performer,
+			Genre:     song.Genre,
+			Duration:  song.Duration,
+		})
+	}
+
 	return web3.PlaylistResponse{
 		Id:    playlist.Id,
 		Name:  playlist.Name,
 		Owner: playlist.Owner,
+		Songs: songs,
 	}
+}
+
+func ToPlaylistResponses(playlists []domain.Playlist) []web3.PlaylistResponse {
+	var playlistResponses []web3.PlaylistResponse
+	for _, playlist := range playlists {
+		playlistResponses = append(playlistResponses, ToPlaylistResponse(playlist))
+	}
+
+	return playlistResponses
 }
 
 func ToUserRegisterResponse(user domain.User) web4.UserRegisterResponse {

@@ -10,6 +10,6 @@ type PlaylistService interface {
 	AddSongToPlaylist(ctx context.Context, request web.PlaylistSongRequest) error
 	DeleteSongInPlaylist(ctx context.Context, request web.PlaylistSongRequest) error
 	DeletePlaylist(ctx context.Context, id int) error
-	FindPlaylistById(ctx context.Context, playlistId int) (web.PlaylistResponse, error)
+	FindPlaylistById(ctx context.Context, id int) (web.PlaylistResponse, error)
 	FindAllPlaylists(ctx context.Context) ([]web.PlaylistResponse, error)
 }
