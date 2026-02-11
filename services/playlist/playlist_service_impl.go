@@ -71,10 +71,12 @@ func (ps *PlaylistServiceImpl) AddSongToPlaylist(ctx context.Context, request we
 	defer helper.CommitOrRollack(tx)
 
 	playlist, err := ps.playlistRepository.FindPlaylistById(ctx, tx, request.PlaylistId)
-	helper.PanicIfError(err)
+	if err != nil {
+		panic(exception.NewNotFoundError(err.Error()))
+	}
 
 	if playlist.Owner != userId {
-		panic(exception.NewUnauthorizedError(err.Error()))
+		panic(exception.NewUnauthorizedError("not owner"))
 	}
 
 	_, err = ps.songRepository.FindBySongId(ctx, tx, request.SongId)
@@ -100,16 +102,61 @@ func (ps *PlaylistServiceImpl) DeleteSongInPlaylist(ctx context.Context, request
 	tx, err := ps.DB.Begin()
 	helper.PanicIfError(err)
 	defer helper.CommitOrRollack(tx)
+
+	playlist, err := ps.playlistRepository.FindPlaylistById(ctx, tx, request.PlaylistId)
+	if err != nil {
+		panic(exception.NewNotFoundError(err.Error()))
+	}
+
+	if playlist.Owner != userId {
+		panic(exception.NewUnauthorizedError("not owner"))
+	}
+
+	_, err = ps.songRepository.FindBySongId(ctx, tx, request.SongId)
+	if err != nil {
+		panic(exception.NewNotFoundError(err.Error()))
+	}
+
+	err = ps.playlistRepository.DeleteSongInPlaylist(ctx, tx, request.PlaylistId, request.SongId)
+	helper.PanicIfError(err)
+
+	return nil
 }
 
 func (ps *PlaylistServiceImpl) DeletePlaylist(ctx context.Context, id int) error {
+	tx, err := ps.DB.Begin()
+	helper.PanicIfError(err)
+	defer helper.CommitOrRollack(tx)
 
+	_, err = ps.playlistRepository.FindPlaylistById(ctx, tx, id)
+	if err != nil {
+		panic(exception.NewNotFoundError(err.Error()))
+	}
+
+	ps.playlistRepository.DeletePlaylist(ctx, tx, id)
+
+	return nil
 }
 
-func (ps *PlaylistServiceImpl) FindPlaylistById(ctx context.Context, playlistId int) (web.PlaylistResponse, error) {
+func (ps *PlaylistServiceImpl) FindPlaylistById(ctx context.Context, id int) (web.PlaylistResponse, error) {
+	tx, err := ps.DB.Begin()
+	helper.PanicIfError(err)
+	defer helper.CommitOrRollack(tx)
 
+	playlist, err := ps.playlistRepository.FindPlaylistById(ctx, tx, id)
+	if err != nil {
+		panic(exception.NewNotFoundError(err.Error()))
+	}
+
+	return helper.ToPlaylistResponse(playlist), nil
 }
 
 func (ps *PlaylistServiceImpl) FindAllPlaylists(ctx context.Context) ([]web.PlaylistResponse, error) {
+	tx, err := ps.DB.Begin()
+	helper.PanicIfError(err)
+	defer helper.CommitOrRollack(tx)
 
+	playlists := ps.playlistRepository.FindAllPlaylists(ctx, tx)
+
+	return helper.ToPlaylistResponses(playlists), nil
 }
