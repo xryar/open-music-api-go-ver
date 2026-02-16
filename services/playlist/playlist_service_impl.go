@@ -117,20 +117,28 @@ func (ps *PlaylistServiceImpl) DeleteSongInPlaylist(ctx context.Context, request
 		panic(exception.NewNotFoundError(err.Error()))
 	}
 
-	err = ps.playlistRepository.DeleteSongInPlaylist(ctx, tx, request.PlaylistId, request.SongId)
-	helper.PanicIfError(err)
+	ps.playlistRepository.DeleteSongInPlaylist(ctx, tx, request.PlaylistId, request.SongId)
 
 	return nil
 }
 
 func (ps *PlaylistServiceImpl) DeletePlaylist(ctx context.Context, id int) error {
+	userId, ok := ctx.Value("userId").(int)
+	if !ok {
+		panic(exception.NewUnauthorizedError("unauthorized"))
+	}
+
 	tx, err := ps.DB.Begin()
 	helper.PanicIfError(err)
 	defer helper.CommitOrRollack(tx)
 
-	_, err = ps.playlistRepository.FindPlaylistById(ctx, tx, id)
+	playlist, err := ps.playlistRepository.FindPlaylistById(ctx, tx, id)
 	if err != nil {
 		panic(exception.NewNotFoundError(err.Error()))
+	}
+
+	if playlist.Owner != userId {
+		panic(exception.NewUnauthorizedError("not owner"))
 	}
 
 	ps.playlistRepository.DeletePlaylist(ctx, tx, id)

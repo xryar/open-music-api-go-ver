@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"open-music-go/exception"
 	"open-music-go/helper"
 	"open-music-go/model/domain"
 )
@@ -35,12 +36,17 @@ func (pr *PlaylistRepositoryImpl) AddSongToPlaylist(ctx context.Context, tx *sql
 	return nil
 }
 
-func (pr *PlaylistRepositoryImpl) DeleteSongInPlaylist(ctx context.Context, tx *sql.Tx, playlistId, songId int) error {
+func (pr *PlaylistRepositoryImpl) DeleteSongInPlaylist(ctx context.Context, tx *sql.Tx, playlistId, songId int) {
 	SQL := "DELETE FROM playlist_songs WHERE playlist_id = ? AND song_id = ?"
-	_, err := tx.ExecContext(ctx, SQL, playlistId, songId)
+	result, err := tx.ExecContext(ctx, SQL, playlistId, songId)
 	helper.PanicIfError(err)
 
-	return nil
+	rows, err := result.RowsAffected()
+	helper.PanicIfError(err)
+
+	if rows == 0 {
+		panic(exception.NewNotFoundError("song not found in playlist"))
+	}
 }
 
 func (pr *PlaylistRepositoryImpl) FindPlaylistByOwner(ctx context.Context, tx *sql.Tx, userId int) []domain.Playlist {
