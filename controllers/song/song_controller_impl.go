@@ -1,7 +1,6 @@
 package controllers
 
 import (
-	"fmt"
 	"net/http"
 	"open-music-go/helper"
 	"open-music-go/model/web"
@@ -21,8 +20,6 @@ func NewSongController(service services.SongService) *SongControllerImpl {
 }
 
 func (sc *SongControllerImpl) CreateSong(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	userId := r.Context().Value("userId").(int)
-	fmt.Println("User ID:", userId)
 
 	songCreateRequest := req.CreateSongRequest{}
 	helper.ReadFromRequestBody(r, &songCreateRequest)
@@ -38,8 +35,6 @@ func (sc *SongControllerImpl) CreateSong(w http.ResponseWriter, r *http.Request,
 }
 
 func (sc *SongControllerImpl) UpdateSong(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	userId := r.Context().Value("userId").(int)
-	fmt.Println("User ID:", userId)
 	songUpdateRequest := req.UpdateSongRequest{}
 	helper.ReadFromRequestBody(r, &songUpdateRequest)
 
@@ -60,8 +55,6 @@ func (sc *SongControllerImpl) UpdateSong(w http.ResponseWriter, r *http.Request,
 }
 
 func (sc *SongControllerImpl) DeleteSong(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	userId := r.Context().Value("userId").(int)
-	fmt.Println("User ID:", userId)
 	songId := p.ByName("songId")
 	id, err := strconv.Atoi(songId)
 	helper.PanicIfError(err)
@@ -76,8 +69,6 @@ func (sc *SongControllerImpl) DeleteSong(w http.ResponseWriter, r *http.Request,
 }
 
 func (sc *SongControllerImpl) FindSongById(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	userId := r.Context().Value("userId").(int)
-	fmt.Println("User ID:", userId)
 	songId := p.ByName("songId")
 	id, err := strconv.Atoi(songId)
 	helper.PanicIfError(err)
@@ -93,8 +84,6 @@ func (sc *SongControllerImpl) FindSongById(w http.ResponseWriter, r *http.Reques
 }
 
 func (sc *SongControllerImpl) FindAllSong(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	userId := r.Context().Value("userId").(int)
-	fmt.Println("User ID:", userId)
 	songResponses := sc.service.FindAllSong(r.Context())
 	webResponse := web.WebResponse{
 		Code:   200,
