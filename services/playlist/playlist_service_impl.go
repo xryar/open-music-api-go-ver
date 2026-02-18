@@ -63,7 +63,7 @@ func (ps *PlaylistServiceImpl) AddSongToPlaylist(ctx context.Context, request we
 
 	userId, ok := ctx.Value("userId").(int)
 	if !ok {
-		panic(exception.NewUnauthorizedError(err.Error()))
+		panic(exception.NewUnauthorizedError("unauthorized"))
 	}
 
 	tx, err := ps.DB.Begin()
