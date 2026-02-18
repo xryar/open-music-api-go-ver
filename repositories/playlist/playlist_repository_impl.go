@@ -29,7 +29,7 @@ func (pr *PlaylistRepositoryImpl) CreatePlaylist(ctx context.Context, tx *sql.Tx
 }
 
 func (pr *PlaylistRepositoryImpl) AddSongToPlaylist(ctx context.Context, tx *sql.Tx, playlistId, songId int) error {
-	SQL := "INSERT INTO playlist_song(playlist_id, song_id) VALUES (?, ?)"
+	SQL := "INSERT INTO playlist_songs(playlist_id, song_id) VALUES (?, ?)"
 	_, err := tx.ExecContext(ctx, SQL, playlistId, songId)
 	helper.PanicIfError(err)
 
@@ -67,7 +67,7 @@ func (pr *PlaylistRepositoryImpl) FindPlaylistByOwner(ctx context.Context, tx *s
 }
 
 func (pr *PlaylistRepositoryImpl) DeletePlaylist(ctx context.Context, tx *sql.Tx, id int) {
-	SQL := "DELETE FROM playlist WHERE id = ?"
+	SQL := "DELETE FROM playlists WHERE id = ?"
 	_, err := tx.ExecContext(ctx, SQL, id)
 	helper.PanicIfError(err)
 }
