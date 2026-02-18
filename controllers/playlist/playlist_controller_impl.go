@@ -40,7 +40,7 @@ func (pc *PlaylistControllerImpl) AddSongToPlaylist(w http.ResponseWriter, r *ht
 	bodyRequest := req.SongToPlaylistRequest{}
 	helper.ReadFromRequestBody(r, &bodyRequest)
 
-	playlistId := p.ByName("id")
+	playlistId := p.ByName("playlistId")
 	id, err := strconv.Atoi(playlistId)
 	helper.PanicIfError(err)
 
@@ -62,7 +62,7 @@ func (pc *PlaylistControllerImpl) AddSongToPlaylist(w http.ResponseWriter, r *ht
 }
 
 func (pc *PlaylistControllerImpl) DeletePlaylist(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	playlistId := p.ByName("id")
+	playlistId := p.ByName("playlistId")
 	id, err := strconv.Atoi(playlistId)
 	helper.PanicIfError(err)
 
@@ -82,7 +82,7 @@ func (pc *PlaylistControllerImpl) DeleteSongInPlaylist(w http.ResponseWriter, r 
 	bodyRequest := req.SongToPlaylistRequest{}
 	helper.ReadFromRequestBody(r, &bodyRequest)
 
-	playlistId := p.ByName("id")
+	playlistId := p.ByName("playlistId")
 	id, err := strconv.Atoi(playlistId)
 	helper.PanicIfError(err)
 
@@ -104,7 +104,7 @@ func (pc *PlaylistControllerImpl) DeleteSongInPlaylist(w http.ResponseWriter, r 
 }
 
 func (pc *PlaylistControllerImpl) FindByPlaylistId(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
-	playlistId := p.ByName("id")
+	playlistId := p.ByName("playlistId")
 	id, err := strconv.Atoi(playlistId)
 	helper.PanicIfError(err)
 
