@@ -83,7 +83,7 @@ func (ss *SongServiceImpl) DeleteSong(ctx context.Context, id int) {
 		panic(exception.NewNotFoundError(err.Error()))
 	}
 
-	ss.repository.DeleteSong(ctx, tx, song.Duration)
+	ss.repository.DeleteSong(ctx, tx, song.Id)
 }
 
 func (ss *SongServiceImpl) FindBySongId(ctx context.Context, id int) web.SongResponse {
