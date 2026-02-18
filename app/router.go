@@ -53,8 +53,8 @@ func playlistRouter(router *httprouter.Router, playlistController playlistContro
 	router.POST("/api/playlists", middlewares.AuthMiddleware(playlistController.CreatePlaylist))
 	router.GET("/api/playlists/me", middlewares.AuthMiddleware(playlistController.FindPlaylistByOwner))
 	router.GET("/api/playlists", playlistController.FindAllPlaylist)
-	router.DELETE("/api/playlists/:id", middlewares.AuthMiddleware(playlistController.DeletePlaylist))
-	router.POST("/api/playlists/:id/songs", middlewares.AuthMiddleware(playlistController.AddSongToPlaylist))
-	router.GET("/api/playlists/:id/songs", middlewares.AuthMiddleware(playlistController.FindByPlaylistId))
-	router.DELETE("/api/playlists/:id/songs", middlewares.AuthMiddleware(playlistController.DeleteSongInPlaylist))
+	router.DELETE("/api/playlists", middlewares.AuthMiddleware(playlistController.DeletePlaylist))
+	router.POST("/api/playlists/songs/:playlistId", middlewares.AuthMiddleware(playlistController.AddSongToPlaylist))
+	router.GET("/api/playlists/songs/:playlistId", middlewares.AuthMiddleware(playlistController.FindByPlaylistId))
+	router.DELETE("/api/playlists/songs/:playlistId", middlewares.AuthMiddleware(playlistController.DeleteSongInPlaylist))
 }
