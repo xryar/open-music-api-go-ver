@@ -121,6 +121,30 @@ func (pc *PlaylistControllerImpl) FindByPlaylistId(w http.ResponseWriter, r *htt
 	helper.WriteToResponseBody(w, webResponse)
 }
 
-func (pc *PlaylistControllerImpl) FindAllPlaylist(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+func (pc *PlaylistControllerImpl) FindPlaylistByOwner(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	playlists, err := pc.service.FindPlaylistByOwner(r.Context())
+	helper.PanicIfError(err)
 
+	webResponse := web.WebResponse{
+		Code:    200,
+		Status:  "OK",
+		Message: "Success Get Playlist by Owner",
+		Data:    playlists,
+	}
+
+	helper.WriteToResponseBody(w, webResponse)
+}
+
+func (pc *PlaylistControllerImpl) FindAllPlaylist(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	playlists, err := pc.service.FindAllPlaylists(r.Context())
+	helper.PanicIfError(err)
+
+	webResponse := web.WebResponse{
+		Code:    200,
+		Status:  "OK",
+		Message: "Success Get All Playlists",
+		Data:    playlists,
+	}
+
+	helper.WriteToResponseBody(w, webResponse)
 }
