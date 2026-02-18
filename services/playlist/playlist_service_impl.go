@@ -168,3 +168,18 @@ func (ps *PlaylistServiceImpl) FindAllPlaylists(ctx context.Context) ([]web.Play
 
 	return helper.ToPlaylistResponses(playlists), nil
 }
+
+func (ps *PlaylistServiceImpl) FindPlaylistByOwner(ctx context.Context) ([]web.PlaylistResponse, error) {
+	userId, ok := ctx.Value("userId").(int)
+	if !ok {
+		panic(exception.NewUnauthorizedError("unauthorized"))
+	}
+
+	tx, err := ps.DB.Begin()
+	helper.PanicIfError(err)
+	defer helper.CommitOrRollack(tx)
+
+	playlists := ps.playlistRepository.FindPlaylistByOwner(ctx, tx, userId)
+
+	return helper.ToPlaylistResponses(playlists), nil
+}
