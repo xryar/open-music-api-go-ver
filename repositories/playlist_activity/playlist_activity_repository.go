@@ -1,0 +1,13 @@
+package repositories
+
+import (
+	"context"
+	"database/sql"
+	"open-music-go/model/domain"
+	web "open-music-go/model/web/playlist_activity"
+)
+
+type PlaylistActivityRepository interface {
+	Create(ctx context.Context, tx *sql.Tx, activity domain.PlaylistActivity) error
+	FindPlaylistById(ctx context.Context, tx *sql.Tx, playlistId int) ([]web.Activity, error)
+}

@@ -3,6 +3,7 @@ package services
 import (
 	"context"
 	web "open-music-go/model/web/playlist"
+	web2 "open-music-go/model/web/playlist_activity"
 )
 
 type PlaylistService interface {
@@ -13,4 +14,5 @@ type PlaylistService interface {
 	DeletePlaylist(ctx context.Context, id int) error
 	FindPlaylistById(ctx context.Context, id int) (web.PlaylistResponse, error)
 	FindAllPlaylists(ctx context.Context) ([]web.PlaylistResponse, error)
+	GetPlaylistActivities(ctx context.Context, playlistId int) (web2.PlaylistActivityResponse, error)
 }

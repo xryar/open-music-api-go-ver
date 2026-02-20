@@ -8,6 +8,7 @@ import (
 	"open-music-go/model/domain"
 	web "open-music-go/model/web/playlist"
 	playlistRepo "open-music-go/repositories/playlist"
+	activityRepo "open-music-go/repositories/playlist_activity"
 	songRepo "open-music-go/repositories/song"
 
 	"github.com/go-playground/validator/v10"
@@ -16,6 +17,7 @@ import (
 type PlaylistServiceImpl struct {
 	playlistRepository playlistRepo.PlaylistRepository
 	songRepository     songRepo.SongRepository
+	activityRepository activityRepo.PlaylistActivityRepository
 	DB                 *sql.DB
 	validate           *validator.Validate
 }
@@ -23,12 +25,14 @@ type PlaylistServiceImpl struct {
 func NewPlaylistService(
 	playlistRepository playlistRepo.PlaylistRepository,
 	songRepository songRepo.SongRepository,
+	activityRepository activityRepo.PlaylistActivityRepository,
 	db *sql.DB,
 	validate *validator.Validate,
 ) *PlaylistServiceImpl {
 	return &PlaylistServiceImpl{
 		playlistRepository: playlistRepository,
 		songRepository:     songRepository,
+		activityRepository: activityRepository,
 		DB:                 db,
 		validate:           validate,
 	}
@@ -87,6 +91,16 @@ func (ps *PlaylistServiceImpl) AddSongToPlaylist(ctx context.Context, request we
 	err = ps.playlistRepository.AddSongToPlaylist(ctx, tx, request.PlaylistId, request.SongId)
 	helper.PanicIfError(err)
 
+	activity := domain.PlaylistActivity{
+		PlaylistId: request.PlaylistId,
+		SongId:     request.SongId,
+		UserId:     userId,
+		Action:     "ADD",
+	}
+
+	err = ps.activityRepository.Create(ctx, tx, activity)
+	helper.PanicIfError(err)
+
 	return nil
 }
 
@@ -118,6 +132,15 @@ func (ps *PlaylistServiceImpl) DeleteSongInPlaylist(ctx context.Context, request
 	}
 
 	ps.playlistRepository.DeleteSongInPlaylist(ctx, tx, request.PlaylistId, request.SongId)
+
+	activity := domain.PlaylistActivity{
+		PlaylistId: request.PlaylistId,
+		SongId:     request.SongId,
+		UserId:     userId,
+		Action:     "DELETE",
+	}
+
+	err = ps.activityRepository.Create(ctx, tx, activity)
 
 	return nil
 }
