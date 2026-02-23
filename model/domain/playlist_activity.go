@@ -10,3 +10,10 @@ type PlaylistActivity struct {
 	Action     string
 	Time       time.Time
 }
+
+type PlaylistActivityJoin struct {
+	Username  string
+	SongTitle string
+	Action    string
+	Time      time.Time
+}
