@@ -11,6 +11,7 @@ import (
 	"open-music-go/helper"
 	albumRepository "open-music-go/repositories/album"
 	playlistRepository "open-music-go/repositories/playlist"
+	activityRepository "open-music-go/repositories/playlist_activity"
 	songRepository "open-music-go/repositories/song"
 	userRepository "open-music-go/repositories/user"
 	albumService "open-music-go/services/album"
@@ -25,14 +26,15 @@ import (
 func main() {
 	db := app.NewDB()
 	validate := validator.New()
-	albumRepository := albumRepository.NewAlbumRepository()
-	songRepository := songRepository.NewSongRepository()
-	userRepository := userRepository.NewUserRepository()
-	playlistRepository := playlistRepository.NewPlaylistRepository()
-	albumService := albumService.NewAlbumService(albumRepository, db, validate)
-	songService := songService.NewSongService(songRepository, db, validate)
-	userService := userService.NewUserService(userRepository, db, validate)
-	playlistService := playlistService.NewPlaylistService(playlistRepository, songRepository, db, validate)
+	albumRepo := albumRepository.NewAlbumRepository()
+	activityRepo := activityRepository.NewPlaylistActivityRepository()
+	songRepo := songRepository.NewSongRepository()
+	userRepo := userRepository.NewUserRepository()
+	playlistRepo := playlistRepository.NewPlaylistRepository()
+	albumService := albumService.NewAlbumService(albumRepo, db, validate)
+	songService := songService.NewSongService(songRepo, db, validate)
+	userService := userService.NewUserService(userRepo, db, validate)
+	playlistService := playlistService.NewPlaylistService(playlistRepo, songRepo, activityRepo, db, validate)
 	albumController := albumController.NewAlbumController(albumService)
 	songController := songController.NewSongController(songService)
 	userController := userController.NewUserController(userService)

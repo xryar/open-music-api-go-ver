@@ -14,4 +14,5 @@ type PlaylistController interface {
 	FindByPlaylistId(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 	FindAllPlaylist(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 	FindPlaylistByOwner(w http.ResponseWriter, r *http.Request, p httprouter.Params)
+	GetPlaylistActivities(w http.ResponseWriter, r *http.Request, p httprouter.Params)
 }

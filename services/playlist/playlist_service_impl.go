@@ -7,6 +7,7 @@ import (
 	"open-music-go/helper"
 	"open-music-go/model/domain"
 	web "open-music-go/model/web/playlist"
+	web2 "open-music-go/model/web/playlist_activity"
 	playlistRepo "open-music-go/repositories/playlist"
 	activityRepo "open-music-go/repositories/playlist_activity"
 	songRepo "open-music-go/repositories/song"
@@ -205,4 +206,29 @@ func (ps *PlaylistServiceImpl) FindPlaylistByOwner(ctx context.Context) ([]web.P
 	playlists := ps.playlistRepository.FindPlaylistByOwner(ctx, tx, userId)
 
 	return helper.ToPlaylistResponses(playlists), nil
+}
+
+func (ps *PlaylistServiceImpl) GetPlaylistActivities(ctx context.Context, playlistId int) (web2.PlaylistActivityResponse, error) {
+	userId, ok := ctx.Value("userId").(int)
+	if !ok {
+		panic(exception.NewUnauthorizedError("unauthorized"))
+	}
+
+	tx, err := ps.DB.Begin()
+	helper.PanicIfError(err)
+	defer helper.CommitOrRollack(tx)
+
+	playlist, err := ps.playlistRepository.FindPlaylistById(ctx, tx, playlistId)
+	if err != nil {
+		panic(exception.NewNotFoundError(err.Error()))
+	}
+
+	if playlist.Owner != userId {
+		panic(exception.NewUnauthorizedError("not owner"))
+	}
+
+	activities, err := ps.activityRepository.FindPlaylistById(ctx, tx, playlistId)
+	helper.PanicIfError(err)
+
+	return helper.ToActivityResponses(playlistId, activities), nil
 }

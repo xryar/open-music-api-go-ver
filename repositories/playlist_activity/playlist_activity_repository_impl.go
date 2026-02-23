@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"open-music-go/model/domain"
-	web "open-music-go/model/web/playlist_activity"
 )
 
 type PlaylistActivityRepositoryImpl struct {
@@ -24,7 +23,7 @@ func (ar *PlaylistActivityRepositoryImpl) Create(ctx context.Context, tx *sql.Tx
 	return nil
 }
 
-func (ar *PlaylistActivityRepositoryImpl) FindPlaylistById(ctx context.Context, tx *sql.Tx, playlistId int) ([]web.Activity, error) {
+func (ar *PlaylistActivityRepositoryImpl) FindPlaylistById(ctx context.Context, tx *sql.Tx, playlistId int) ([]domain.PlaylistActivityJoin, error) {
 	SQL := `
 	SELECT
 		u.username,
@@ -44,10 +43,10 @@ func (ar *PlaylistActivityRepositoryImpl) FindPlaylistById(ctx context.Context, 
 	}
 	defer rows.Close()
 
-	activities := []web.Activity{}
+	activities := []domain.PlaylistActivityJoin{}
 
 	for rows.Next() {
-		activity := web.Activity{}
+		activity := domain.PlaylistActivityJoin{}
 		err := rows.Scan(&activity.Username, &activity.SongTitle, &activity.Action, &activity.Time)
 		if err != nil {
 			return nil, err
