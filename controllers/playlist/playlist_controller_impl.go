@@ -148,3 +148,21 @@ func (pc *PlaylistControllerImpl) FindAllPlaylist(w http.ResponseWriter, r *http
 
 	helper.WriteToResponseBody(w, webResponse)
 }
+
+func (pc *PlaylistControllerImpl) GetPlaylistActivities(w http.ResponseWriter, r *http.Request, p httprouter.Params) {
+	playlistId := p.ByName("playlistId")
+	id, err := strconv.Atoi(playlistId)
+	helper.PanicIfError(err)
+
+	activities, err := pc.service.GetPlaylistActivities(r.Context(), id)
+	helper.PanicIfError(err)
+
+	webResponse := web.WebResponse{
+		Code:    200,
+		Status:  "OK",
+		Message: "Success Get Playlist Activities",
+		Data:    activities,
+	}
+
+	helper.WriteToResponseBody(w, webResponse)
+}
