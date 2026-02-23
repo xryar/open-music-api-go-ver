@@ -4,6 +4,7 @@ import (
 	"open-music-go/model/domain"
 	web "open-music-go/model/web/album"
 	web3 "open-music-go/model/web/playlist"
+	web5 "open-music-go/model/web/playlist_activity"
 	web2 "open-music-go/model/web/song"
 	web4 "open-music-go/model/web/user"
 )
@@ -102,5 +103,27 @@ func ToUserRegisterResponse(user domain.User) web4.UserRegisterResponse {
 func ToUserLoginResponse(token string) web4.UserLoginResponse {
 	return web4.UserLoginResponse{
 		Token: token,
+	}
+}
+
+func ToActivityResponse(a domain.PlaylistActivityJoin) web5.Activity {
+	return web5.Activity{
+		Username:  a.Username,
+		SongTitle: a.SongTitle,
+		Action:    a.Action,
+		Time:      a.Time,
+	}
+}
+
+func ToActivityResponses(playlistId int, activities []domain.PlaylistActivityJoin) web5.PlaylistActivityResponse {
+	activitiesResponse := []web5.Activity{}
+
+	for _, a := range activities {
+		activitiesResponse = append(activitiesResponse, ToActivityResponse(a))
+	}
+
+	return web5.PlaylistActivityResponse{
+		PlaylistId: playlistId,
+		Activities: activitiesResponse,
 	}
 }
