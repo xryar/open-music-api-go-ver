@@ -50,7 +50,7 @@ func (pcr *PlaylistCollabRepositoryImpl) IsCollab(ctx context.Context, tx *sql.T
 	return true, nil
 }
 
-func (r *PlaylistCollabRepositoryImpl) FindByPlaylistId(ctx context.Context, tx *sql.Tx, playlistId int) ([]int, error) {
+func (r *PlaylistCollabRepositoryImpl) GetCollaborators(ctx context.Context, tx *sql.Tx, playlistId int) ([]int, error) {
 	SQL := "SELECT user_id FROM playlist_collaborators WHERE playlist_id = ?"
 	rows, err := tx.QueryContext(ctx, SQL, playlistId)
 	if err != nil {
