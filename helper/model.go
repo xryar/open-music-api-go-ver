@@ -127,3 +127,17 @@ func ToActivityResponses(playlistId int, activities []domain.PlaylistActivityJoi
 		Activities: activitiesResponse,
 	}
 }
+
+func ToCollaboratorResponses(users []domain.User) []web.CollaboratorResponse {
+
+	var responses []web.CollaboratorResponse
+
+	for _, user := range users {
+		responses = append(responses, web.CollaboratorResponse{
+			Id:       user.Id,
+			Username: user.Username,
+		})
+	}
+
+	return responses
+}
