@@ -42,3 +42,19 @@ func (us *UserRepositoryImpl) FindByUsername(ctx context.Context, tx *sql.Tx, us
 		return user, errors.New("user not found")
 	}
 }
+
+func (us *UserRepositoryImpl) FindById(ctx context.Context, tx *sql.Tx, id int) (domain.User, error) {
+	SQL := "SELECT id, username FROM users WHERE id = (?) LIMIT 1"
+	rows, err := tx.QueryContext(ctx, SQL, id)
+	helper.PanicIfError(err)
+	defer rows.Close()
+
+	user := domain.User{}
+	if rows.Next() {
+		err := rows.Scan(&user.Id, &user.Username)
+		helper.PanicIfError(err)
+		return user, nil
+	} else {
+		return user, err
+	}
+}
