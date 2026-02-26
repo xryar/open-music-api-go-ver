@@ -3,6 +3,7 @@ package app
 import (
 	albumControllers "open-music-go/controllers/album"
 	playlistControllers "open-music-go/controllers/playlist"
+	collabControllers "open-music-go/controllers/playlist_collab"
 	songControllers "open-music-go/controllers/song"
 	userControllers "open-music-go/controllers/user"
 	"open-music-go/exception"
@@ -16,12 +17,14 @@ func NewRouter(
 	songController songControllers.SongController,
 	userController userControllers.UserController,
 	playlistController playlistControllers.PlaylistController,
+	collabController collabControllers.PlaylistCollabController,
 ) *httprouter.Router {
 	router := httprouter.New()
 	albumRouter(router, albumController)
 	songRouter(router, songController)
 	userRouter(router, userController)
 	playlistRouter(router, playlistController)
+	collabRouter(router, collabController)
 
 	router.PanicHandler = exception.ErrorHandler
 
@@ -58,4 +61,10 @@ func playlistRouter(router *httprouter.Router, playlistController playlistContro
 	router.GET("/api/playlists-song/:playlistId", middlewares.AuthMiddleware(playlistController.FindByPlaylistId))
 	router.DELETE("/api/playlists-song/:playlistId", middlewares.AuthMiddleware(playlistController.DeleteSongInPlaylist))
 	router.GET("/api/playlist-activities/:playlistId", middlewares.AuthMiddleware(playlistController.GetPlaylistActivities))
+}
+
+func collabRouter(router *httprouter.Router, collabController collabControllers.PlaylistCollabController) {
+	router.POST("/api/playlists/collaborator/:playlistId", middlewares.AuthMiddleware(collabController.AddCollaborator))
+	router.GET("/api/playlists/collaborator/:playlistId", middlewares.AuthMiddleware(collabController.GetAllCollaborators))
+	router.DELETE("/api/playlists/collaborator/:playlistId", middlewares.AuthMiddleware(collabController.RemoveCollaborator))
 }
