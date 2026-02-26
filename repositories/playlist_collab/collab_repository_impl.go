@@ -9,7 +9,7 @@ import (
 type PlaylistCollabRepositoryImpl struct {
 }
 
-func NewPlaylistCollabRepositoryImpl() *PlaylistCollabRepositoryImpl {
+func NewPlaylistCollabRepository() *PlaylistCollabRepositoryImpl {
 	return &PlaylistCollabRepositoryImpl{}
 }
 
@@ -50,25 +50,28 @@ func (pcr *PlaylistCollabRepositoryImpl) IsCollab(ctx context.Context, tx *sql.T
 	return true, nil
 }
 
-func (r *PlaylistCollabRepositoryImpl) GetCollaborators(ctx context.Context, tx *sql.Tx, playlistId int) ([]int, error) {
-	SQL := "SELECT user_id FROM playlist_collaborators WHERE playlist_id = ?"
+func (r *PlaylistCollabRepositoryImpl) GetCollaborators(ctx context.Context, tx *sql.Tx, playlistId int) ([]domain.User, error) {
+	SQL := `
+	SELECT u.id, u.username
+	JOIN users u ON pc.user_id = u.id
+	FROM playlist_collaborators pc 
+	WHERE pc.playlist_id = ?
+	`
 	rows, err := tx.QueryContext(ctx, SQL, playlistId)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
-	users := []int{}
+	var users []domain.User
 	for rows.Next() {
-
-		var userId int
-
-		err := rows.Scan(&userId)
+		user := domain.User{}
+		err := rows.Scan(&user.Id, user.Username)
 		if err != nil {
 			return nil, err
 		}
 
-		users = append(users, userId)
+		users = append(users, user)
 	}
 
 	return users, nil

@@ -3,6 +3,7 @@ package helper
 import (
 	"open-music-go/model/domain"
 	web "open-music-go/model/web/album"
+	web6 "open-music-go/model/web/collab"
 	web3 "open-music-go/model/web/playlist"
 	web5 "open-music-go/model/web/playlist_activity"
 	web2 "open-music-go/model/web/song"
@@ -128,12 +129,19 @@ func ToActivityResponses(playlistId int, activities []domain.PlaylistActivityJoi
 	}
 }
 
-func ToCollaboratorResponses(users []domain.User) []web.CollaboratorResponse {
+func ToCollaboratorResponse(user domain.User) web6.CollabResponse {
+	return web6.CollabResponse{
+		Id:       user.Id,
+		Username: user.Username,
+	}
+}
 
-	var responses []web.CollaboratorResponse
+func ToCollaboratorResponses(users []domain.User) []web6.CollabResponse {
+
+	var responses []web6.CollabResponse
 
 	for _, user := range users {
-		responses = append(responses, web.CollaboratorResponse{
+		responses = append(responses, web6.CollabResponse{
 			Id:       user.Id,
 			Username: user.Username,
 		})
