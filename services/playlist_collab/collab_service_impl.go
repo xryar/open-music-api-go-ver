@@ -123,7 +123,7 @@ func (pcs *PlaylistCollabServiceImpl) RemoveCollaborator(ctx context.Context, re
 	return nil
 }
 
-func (pcs *PlaylistCollabServiceImpl) GetCollaborators(ctx context.Context, playlistId int) ([]int, error) {
+func (pcs *PlaylistCollabServiceImpl) GetCollaborators(ctx context.Context, playlistId int) ([]web.CollabResponse, error) {
 	userId, ok := ctx.Value("userId").(int)
 	if !ok {
 		panic(exception.NewUnauthorizedError("user not found"))

@@ -8,5 +8,5 @@ import (
 type PlaylistCollabService interface {
 	AddCollaborator(ctx context.Context, request web.CollabRequest) error
 	RemoveCollaborator(ctx context.Context, request web.CollabRequest) error
-	GetCollaborators(ctx context.Context, playlistId int) ([]int, error)
+	GetCollaborators(ctx context.Context, playlistId int) ([]web.CollabResponse, error)
 }
