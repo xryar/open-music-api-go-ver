@@ -9,7 +9,7 @@ import (
 type PlaylistCollabRepositoryImpl struct {
 }
 
-func NewPlaylistCollabRepositoryImpl() *PlaylistCollabRepositoryImpl {
+func NewPlaylistCollabRepository() *PlaylistCollabRepositoryImpl {
 	return &PlaylistCollabRepositoryImpl{}
 }
 
