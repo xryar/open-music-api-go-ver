@@ -10,6 +10,7 @@ import (
 	web2 "open-music-go/model/web/playlist_activity"
 	playlistRepo "open-music-go/repositories/playlist"
 	activityRepo "open-music-go/repositories/playlist_activity"
+	collabRepo "open-music-go/repositories/playlist_collab"
 	songRepo "open-music-go/repositories/song"
 
 	"github.com/go-playground/validator/v10"
@@ -19,6 +20,7 @@ type PlaylistServiceImpl struct {
 	playlistRepository playlistRepo.PlaylistRepository
 	songRepository     songRepo.SongRepository
 	activityRepository activityRepo.PlaylistActivityRepository
+	collabRepository   collabRepo.PlaylistCollabRepository
 	DB                 *sql.DB
 	validate           *validator.Validate
 }
@@ -27,6 +29,7 @@ func NewPlaylistService(
 	playlistRepository playlistRepo.PlaylistRepository,
 	songRepository songRepo.SongRepository,
 	activityRepository activityRepo.PlaylistActivityRepository,
+	collabRepository collabRepo.PlaylistCollabRepository,
 	db *sql.DB,
 	validate *validator.Validate,
 ) *PlaylistServiceImpl {
@@ -34,6 +37,7 @@ func NewPlaylistService(
 		playlistRepository: playlistRepository,
 		songRepository:     songRepository,
 		activityRepository: activityRepository,
+		collabRepository:   collabRepository,
 		DB:                 db,
 		validate:           validate,
 	}
@@ -80,8 +84,8 @@ func (ps *PlaylistServiceImpl) AddSongToPlaylist(ctx context.Context, request we
 		panic(exception.NewNotFoundError(err.Error()))
 	}
 
-	if playlist.Owner != userId {
-		panic(exception.NewUnauthorizedError("not owner"))
+	if !ps.hasAccess(ctx, tx, playlist, userId) {
+		panic(exception.NewUnauthorizedError("no access"))
 	}
 
 	_, err = ps.songRepository.FindBySongId(ctx, tx, request.SongId)
@@ -223,12 +227,31 @@ func (ps *PlaylistServiceImpl) GetPlaylistActivities(ctx context.Context, playli
 		panic(exception.NewNotFoundError(err.Error()))
 	}
 
-	if playlist.Owner != userId {
-		panic(exception.NewUnauthorizedError("not owner"))
+	if !ps.hasAccess(ctx, tx, playlist, userId) {
+		panic(exception.NewUnauthorizedError("no access"))
 	}
 
 	activities, err := ps.activityRepository.FindPlaylistById(ctx, tx, playlistId)
 	helper.PanicIfError(err)
 
 	return helper.ToActivityResponses(playlistId, activities), nil
+}
+
+func (ps *PlaylistServiceImpl) hasAccess(
+	ctx context.Context,
+	tx *sql.Tx,
+	playlist domain.Playlist,
+	userId int,
+) bool {
+
+	if playlist.Owner == userId {
+		return true
+	}
+
+	isCollab, _ := ps.collabRepository.IsCollab(ctx, tx, domain.PlaylistCollab{
+		PlaylistId: playlist.Id,
+		UserId:     userId,
+	})
+
+	return isCollab
 }
