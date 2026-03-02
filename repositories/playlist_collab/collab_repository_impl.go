@@ -53,8 +53,8 @@ func (pcr *PlaylistCollabRepositoryImpl) IsCollab(ctx context.Context, tx *sql.T
 func (r *PlaylistCollabRepositoryImpl) GetCollaborators(ctx context.Context, tx *sql.Tx, playlistId int) ([]domain.User, error) {
 	SQL := `
 	SELECT u.id, u.username
+	FROM playlist_collaborators pc
 	JOIN users u ON pc.user_id = u.id
-	FROM playlist_collaborators pc 
 	WHERE pc.playlist_id = ?
 	`
 	rows, err := tx.QueryContext(ctx, SQL, playlistId)
@@ -66,7 +66,7 @@ func (r *PlaylistCollabRepositoryImpl) GetCollaborators(ctx context.Context, tx 
 	var users []domain.User
 	for rows.Next() {
 		user := domain.User{}
-		err := rows.Scan(&user.Id, user.Username)
+		err := rows.Scan(&user.Id, &user.Username)
 		if err != nil {
 			return nil, err
 		}
