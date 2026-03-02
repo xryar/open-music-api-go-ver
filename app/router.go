@@ -64,7 +64,7 @@ func playlistRouter(router *httprouter.Router, playlistController playlistContro
 }
 
 func collabRouter(router *httprouter.Router, collabController collabControllers.PlaylistCollabController) {
-	router.POST("/api/playlists/collaborator/:playlistId", middlewares.AuthMiddleware(collabController.AddCollaborator))
-	router.GET("/api/playlists/collaborator/:playlistId", middlewares.AuthMiddleware(collabController.GetAllCollaborators))
-	router.DELETE("/api/playlists/collaborator/:playlistId", middlewares.AuthMiddleware(collabController.RemoveCollaborator))
+	router.POST("/api/playlists-collaborator/:playlistId", middlewares.AuthMiddleware(collabController.AddCollaborator))
+	router.GET("/api/playlists-collaborator/:playlistId", middlewares.AuthMiddleware(collabController.GetAllCollaborators))
+	router.DELETE("/api/playlists-collaborator/:playlistId", middlewares.AuthMiddleware(collabController.RemoveCollaborator))
 }
